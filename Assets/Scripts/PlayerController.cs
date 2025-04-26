@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     private bool canDoubleJump;
 
     private bool isDead = false;
+    public int hP = 10;
+    public LayerMask killLayer;
+
     private bool isDoubleJump = false;
 
     void Start()
@@ -30,6 +33,12 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (isDead) return;
+        
+        // Entrada de prueba
+       if (Input.GetKeyDown(KeyCode.K))
+       {
+           Die();
+       }
 
         float moveInput = Input.GetAxisRaw("Horizontal");
         bool isJumpPressed = Input.GetButtonDown("Jump");
@@ -72,11 +81,13 @@ public class PlayerController : MonoBehaviour
 
         // Simulaciones de daño y muerte
         if (Input.GetKeyDown(KeyCode.H))
+        {
             animator.SetTrigger("isHurt");
-
+            hP--;
+        }
         if (Input.GetKeyDown(KeyCode.K))
         {
-            animator.SetTrigger("isDeath");
+            animator.SetTrigger("isDead");
             isDead = true;
             rb.linearVelocity = Vector2.zero;
         }
@@ -87,6 +98,7 @@ public class PlayerController : MonoBehaviour
         // Verifica si está en el suelo
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         Debug.Log("Is Grounded: " + isGrounded);
+        isDead = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, killLayer);
     }
 
     void OnDrawGizmos()
@@ -98,4 +110,25 @@ public class PlayerController : MonoBehaviour
             Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
     }
+
+    void Die()
+    {
+       isDead = true;
+       animator.SetTrigger("isDeath");
+       rb.linearVelocity = Vector2.zero;
+       rb.bodyType = RigidbodyType2D.Kinematic; // Opcional: congela cuerpo
+       GetComponent<Collider2D>().enabled = false; // Opcional: evita colisiones
+
+        // Si quieres reiniciar el nivel después de unos segundos
+        Invoke("RestartLevel", 2f); // Espera 2 segundos
+    }
+
+    void RestartLevel()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
+            );
+    }
 }
+
+
