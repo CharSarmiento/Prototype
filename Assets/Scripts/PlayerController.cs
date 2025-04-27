@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
+    private PlayerAttack playerAttack;
 
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
@@ -17,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private bool canDoubleJump;
 
+    [Header("Player Stats")]
     private bool isDead = false;
     public int hP = 10;
     public LayerMask killLayer;
@@ -28,6 +30,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        playerAttack = GetComponent<PlayerAttack>();
     }
 
     void Update()
@@ -79,6 +82,27 @@ public class PlayerController : MonoBehaviour
         else if (moveInput < 0)
             transform.localScale = new Vector3(-1, 1, 1);
 
+        // Llamar ataque
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            if (playerAttack != null) 
+            {
+                playerAttack.PerformAttack();
+                animator.SetTrigger("Punch");
+            }
+        }
+
+        if (Input.GetButtonDown("Fire1"))
+        {
+            if(playerAttack != null)
+            {
+                //playerAttack.PerformAttack();
+                // llamamos a la animación y la animación dispara la función PerformAttack()
+                animator.SetTrigger("Punch");
+            }
+        }    
+        
         // Simulaciones de daño y muerte
         if (Input.GetKeyDown(KeyCode.H))
         {
@@ -97,7 +121,7 @@ public class PlayerController : MonoBehaviour
     {
         // Verifica si está en el suelo
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-        Debug.Log("Is Grounded: " + isGrounded);
+        // para debug Debug.Log("Is Grounded: " + isGrounded);
         isDead = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, killLayer);
     }
 
@@ -129,6 +153,8 @@ public class PlayerController : MonoBehaviour
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
             );
     }
+
+
 }
 
 
