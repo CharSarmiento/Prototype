@@ -20,10 +20,16 @@ public class PlayerController : MonoBehaviour
 
     [Header("Player Stats")]
     private bool isDead = false;
-    public int hP = 10;
+    public int maxHP = 10;
+    private int currentHP;
     public LayerMask killLayer;
 
-    private bool isDoubleJump = false;
+    [Header("Knockback Settings")]
+    public float knockbackForce = 10f;
+    public float knockBackForceX = 5f;
+    public float knockBackForceY = 5f;
+
+    //private bool isDoubleJump = false;
 
     void Start()
     {
@@ -31,17 +37,13 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerAttack = GetComponent<PlayerAttack>();
+        currentHP = maxHP;
     }
 
     void Update()
     {
         if (isDead) return;
         
-        // Entrada de prueba
-       if (Input.GetKeyDown(KeyCode.K))
-       {
-           Die();
-       }
 
         float moveInput = Input.GetAxisRaw("Horizontal");
         bool isJumpPressed = Input.GetButtonDown("Jump");
@@ -50,7 +52,7 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
         // Animaciones de movimiento
-        animator.SetBool("isRuning", moveInput != 0);
+        animator.SetBool("isRunning", moveInput != 0);
 
         // Animaciones de salto y caída
         animator.SetBool("isJumping", !isGrounded && rb.linearVelocity.y > 0.1f);
@@ -93,21 +95,20 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("Fire1"))
-        {
-            if(playerAttack != null)
-            {
+       // if (Input.GetButtonDown("Fire1"))
+        //{
+           // if(playerAttack != null)
+           // {
                 //playerAttack.PerformAttack();
                 // llamamos a la animación y la animación dispara la función PerformAttack()
-                animator.SetTrigger("Punch");
-            }
-        }    
+                // animator.SetTrigger("Punch");
+           // }
+        //}    
         
         // Simulaciones de daño y muerte
         if (Input.GetKeyDown(KeyCode.H))
         {
-            animator.SetTrigger("isHurt");
-            hP--;
+            TakeDamage(1, transform);
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
@@ -115,23 +116,21 @@ public class PlayerController : MonoBehaviour
             isDead = true;
             rb.linearVelocity = Vector2.zero;
         }
+
+        // Condición de muerte
+        if(currentHP <= 0)
+        {
+            Die();
+        }
     }
 
     void FixedUpdate()
     {
-        // Verifica si está en el suelo
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-        // para debug Debug.Log("Is Grounded: " + isGrounded);
-        isDead = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, killLayer);
-    }
 
-    void OnDrawGizmos()
-    {
-        // Muestra el área de detección de suelo en la vista de escena
-        if (groundCheck != null)
+        if (Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, killLayer))
         {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+            Die();
         }
     }
 
@@ -140,20 +139,49 @@ public class PlayerController : MonoBehaviour
        isDead = true;
        animator.SetTrigger("isDeath");
        rb.linearVelocity = Vector2.zero;
-       rb.bodyType = RigidbodyType2D.Kinematic; // Opcional: congela cuerpo
-       GetComponent<Collider2D>().enabled = false; // Opcional: evita colisiones
+       rb.bodyType = RigidbodyType2D.Kinematic; // congela cuerpo
+       GetComponent<Collider2D>().enabled = false; // evita colisiones
 
-        // Si quieres reiniciar el nivel después de unos segundos
+        // Reiniciar el nivel después de unos segundos
         Invoke("RestartLevel", 2f); // Espera 2 segundos
     }
 
     void RestartLevel()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
+        UnityEngine.SceneManagement.SceneManager.LoadScene
+            (
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
             );
     }
 
+    public void TakeDamage(int amount, Transform attacker)
+    {
+        if (isDead) return;
+
+        currentHP -= amount;
+        animator.SetTrigger("isHurt");
+
+        // Calculate knockback direction
+        Vector2 knockbackDir = (transform.position.x < attacker.position.x) ? Vector2.left : Vector2.right;
+
+        // Apply knockback force
+        rb.linearVelocity = new Vector2(knockbackDir.x * knockBackForceX, knockBackForceY);
+
+        if (currentHP <= 0)
+        {
+            Die();
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (isDead) return;
+
+        if (other.CompareTag("Enemy"))
+        {
+            TakeDamage(1, transform);
+        }
+    }
 
 }
 
