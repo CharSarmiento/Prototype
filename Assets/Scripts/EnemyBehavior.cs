@@ -4,6 +4,7 @@ public class EnemyBehavior : MonoBehaviour
 {
     public int damage = 1;
     public int hp = 3;
+    public GameObject corpsePrefab;
 
     private GameObject player;
 
@@ -33,6 +34,10 @@ public class EnemyBehavior : MonoBehaviour
 
     void Die()
     {
+        if (corpsePrefab != null)
+        {
+            Instantiate(corpsePrefab, transform.position, Quaternion.identity);
+        }
         Destroy(gameObject);
     }
 

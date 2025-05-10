@@ -146,6 +146,10 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 4198027372403751817, guid: 55ad2c44d8c63e64d9828f76f2c86808, type: 3}
+      propertyPath: corpsePrefab
+      value: 
+      objectReference: {fileID: 7938711060658306114, guid: 6dfd2eecceece5641a60ba4cd8f7de60, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

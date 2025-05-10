@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     public int maxHP = 10;
     private int currentHP;
     public LayerMask killLayer;
+    public GameObject corpsePrefab;
 
     [Header("Knockback Settings")]
     public float knockbackForce = 10f;
@@ -136,14 +137,23 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
-       isDead = true;
-       animator.SetTrigger("isDeath");
-       rb.linearVelocity = Vector2.zero;
-       rb.bodyType = RigidbodyType2D.Kinematic; // congela cuerpo
-       GetComponent<Collider2D>().enabled = false; // evita colisiones
+        isDead = true;
 
-        // Reiniciar el nivel después de unos segundos
-        Invoke("RestartLevel", 2f); // Espera 2 segundos
+        if (corpsePrefab != null)
+        {
+            // Instantiate the corpse prefab at the player's position
+            Instantiate(corpsePrefab, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("No corpse prefab assigned to PlayerController.");
+        }
+
+        // Restart the level after 2 seconds
+        Invoke("RestartLevel", 2f);
+
+        // Delay the destruction of the player GameObject
+        Destroy(gameObject, 2.1f);
     }
 
     void RestartLevel()

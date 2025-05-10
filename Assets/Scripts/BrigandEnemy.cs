@@ -7,6 +7,7 @@ public class BrigandEnemy : MonoBehaviour
     public float moveSpeed = 2f;
     public float attackCooldown = 2f;
     public int damage = 1;
+   
 
     private Transform player;
     private SpriteRenderer spriteRenderer;
