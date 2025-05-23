@@ -1,2 +1,124 @@
 # ElGranPoderRepo
  Juego genérico de plataformas
+ Documentación del Proyecto: Cyberpunk Platformer
+
+Este documento describe la estructura, lógica y componentes principales del prototipo "Cyberpunk Platformer". El objetivo es facilitar el mantenimiento, escalabilidad y posible colaboración en el futuro.
+
+🎮 Nombre del Proyecto
+
+Cyberpunk Platformer (nombre temporal)
+
+📊 Categorías principales
+
+1. Jugador
+
+Responsabilidades: Movimiento, salto, ataque, recibir daño, animaciones.
+
+Scripts
+
+PlayerController.cs: Controla movimiento, disparos, detección de suelo, salto.
+
+PlayerHealth.cs: Maneja vida, daño recibido, muerte.
+
+WeaponController.cs: (Opcional) Disparo, tipo de arma.
+
+PlayerAnimations.cs: (Opcional) Controla transiciones y triggers de animaciones.
+
+Prefabs
+
+Player.prefab
+
+Bullet.prefab
+
+Animaciones
+
+Idle, Run, Jump, Shoot, Hurt, Die
+
+2. Enemigos
+
+Responsabilidades: Perseguir, detectar, atacar, morir, dejar cádaver decorativo.
+
+Scripts
+
+Enemy.cs: Clase base. Movimiento, detección, ataque melee, daño, muerte.
+
+Shooter.cs: Enemigo con disparo, hereda de Enemy. Sobrescribe ataque.
+
+Corpse.cs: Representa sprite estático sin colisión (decoración tras muerte).
+
+Prefabs
+
+Brigand.prefab
+
+Shooter.prefab
+
+EnemyCorpse.prefab
+
+Animaciones
+
+Walk, Attack, Shoot, Death
+
+3. Juego (Sistemas, niveles, UI)
+
+Responsabilidades: Fondos, menú, niveles, parallax, sistemas globales.
+
+Scripts
+
+GameManager.cs: Control global del juego.
+
+LevelManager.cs: Maneja escenas, reinicio, progreso.
+
+UIManager.cs: Menús, HUD, elementos de UI.
+
+CameraController.cs: Sigue al jugador o se mueve en automático.
+
+Parallax.cs: Movimiento de capas de fondo.
+
+SceneLoader.cs: Transición entre escenas.
+
+InputManager.cs: Entrada de usuario si se centraliza.
+
+UI y Escenas
+
+MainMenuCanvas.prefab
+
+PauseMenu.prefab
+
+HUD.prefab
+
+MainMenu.unity
+
+Level01.unity
+
+Fondos y Efectos
+
+BackgroundLayer1.prefab, BackgroundLayer2.prefab, etc.
+
+Sistema parallax configurado manualmente o por script.
+
+📂 Estructura de carpetas sugerida
+
+Assets/
+│
+├── Animations/
+├── Art/
+│   ├── Characters/
+│   ├── Enemies/
+│   ├── Tilesets/
+│   └── UI/
+├── Prefabs/
+│   ├── Player/
+│   ├── Enemies/
+│   ├── UI/
+│   └── Environment/
+├── Scenes/
+│   ├── MainMenu.unity
+│   └── Level01.unity
+├── Scripts/
+│   ├── Player/
+│   ├── Enemies/
+│   ├── Game/
+├── Audio/
+└── Materials/
+
+✏️ Notas y extensiones futuras
