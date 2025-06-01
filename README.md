@@ -18,12 +18,6 @@ Scripts
 
 PlayerController.cs: Controla movimiento, disparos, detección de suelo, salto.
 
-PlayerHealth.cs: Maneja vida, daño recibido, muerte.
-
-WeaponController.cs: (Opcional) Disparo, tipo de arma.
-
-PlayerAnimations.cs: (Opcional) Controla transiciones y triggers de animaciones.
-
 Prefabs
 
 Player.prefab
