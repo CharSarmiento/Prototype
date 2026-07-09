@@ -12,15 +12,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckRadius = 0.1f;
+    
 
     private Rigidbody2D rb;
     private GameInput input;
+    private Animator animator;
 
     private Vector2 moveInput;
     private bool jumpPressed;
 
+     private static readonly int SpeedHash = Animator.StringToHash("Speed");
+
     private void Awake()
     {
+
+        animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
 
         input = new GameInput();
@@ -43,6 +49,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        animator.SetFloat(SpeedHash, Mathf.Abs(moveInput.x));
+
         Flip();
 
         if (jumpPressed && IsGrounded())
@@ -52,6 +60,7 @@ public class PlayerController : MonoBehaviour
         }
 
         jumpPressed = false;
+
     }
 
     private void FixedUpdate()
@@ -75,4 +84,6 @@ public class PlayerController : MonoBehaviour
             groundCheckRadius,
             groundLayer);
     }
+
+   
 }
