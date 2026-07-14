@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -12,70 +11,79 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckRadius = 0.1f;
-    
+    [SerializeField] private float jumpCutMultiplier = 0.5f;
+    [SerializeField] private float fallGravityMultiplier = 2.5f;
+    [SerializeField] private float maxFallSpeed = 18f;
+
 
     private Rigidbody2D rb;
-    private GameInput input;
+    private PlayerInput playerInput;
     private Animator animator;
 
-    private Vector2 moveInput;
-    private bool jumpPressed;
 
      private static readonly int SpeedHash = Animator.StringToHash("Speed");
+     private static readonly int GroundedHash = Animator.StringToHash("Grounded");
+     private static readonly int VerticalSpeedHash = Animator.StringToHash("VerticalSpeed");
 
     private void Awake()
     {
 
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
-
-        input = new GameInput();
-
-        input.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        input.Player.Move.canceled += _ => moveInput = Vector2.zero;
-
-        input.Player.Jump.performed += _ => jumpPressed = true;
-    }
-
-    private void OnEnable()
-    {
-        input.Enable();
-    }
-
-    private void OnDisable()
-    {
-        input.Disable();
+        playerInput = GetComponent<PlayerInput>();
+  
     }
 
     private void Update()
     {
-        animator.SetFloat(SpeedHash, Mathf.Abs(moveInput.x));
+        animator.SetFloat(SpeedHash, Mathf.Abs(playerInput.Move.x));
+        animator.SetBool(GroundedHash, IsGrounded());
+        animator.SetFloat(VerticalSpeedHash, rb.linearVelocity.y);
 
         Flip();
 
-        if (jumpPressed && IsGrounded())
+        if (playerInput.JumpPressed && IsGrounded())
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            jumpPressed = false;
         }
 
-        jumpPressed = false;
+        if (!playerInput.JumpHeld && rb.linearVelocity.y > 0f)
+        {
+            rb.linearVelocity = new Vector2(
+                rb.linearVelocity.x, 
+                rb.linearVelocity.y * jumpCutMultiplier);
+        }
 
     }
 
     private void FixedUpdate()
     {
-        rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(playerInput.Move.x * moveSpeed, rb.linearVelocity.y);
+
+        ApplyBetterJump();
     }
 
     private void Flip()
     {
-        if (moveInput.x > 0)
+        if (playerInput.Move.x > 0)
             transform.localScale = Vector3.one;
 
-        else if (moveInput.x < 0)
+        else if (playerInput.Move.x < 0)
             transform.localScale = new Vector3(-1, 1, 1);
     }
+
+    private void ApplyBetterJump()
+{
+    if (rb.linearVelocity.y < 0f)
+    {
+        rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallGravityMultiplier - 1f) * Time.fixedDeltaTime;
+
+        if (rb.linearVelocity.y < -maxFallSpeed)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
+        }
+    }
+}
 
     private bool IsGrounded()
     {
@@ -83,6 +91,18 @@ public class PlayerController : MonoBehaviour
             groundCheck.position,
             groundCheckRadius,
             groundLayer);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheck == null)
+            return;
+
+        Gizmos.color = Color.red;
+
+        Gizmos.DrawWireSphere(
+            groundCheck.position,
+            groundCheckRadius);
     }
 
    

@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 833534255319223851}
   - component: {fileID: 6519384640237680492}
   - component: {fileID: -1820986903336846800}
+  - component: {fileID: 7120536158412631954}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -237,6 +238,21 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 72
   groundCheckRadius: 0.1
+  jumpCutMultiplier: 0.5
+  fallGravityMultiplier: 2.5
+  maxFallSpeed: 18
+--- !u!114 &7120536158412631954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2967273193813275567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 418b49df02af30f4885fa03fbbc95628, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInput
 --- !u!1 &4337501866898629419
 GameObject:
   m_ObjectHideFlags: 0
