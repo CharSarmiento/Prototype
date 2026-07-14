@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 172956783838968950}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.047, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -128,6 +128,7 @@ GameObject:
   - component: {fileID: 6519384640237680492}
   - component: {fileID: -1820986903336846800}
   - component: {fileID: 7120536158412631954}
+  - component: {fileID: 5667886550435757081}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -232,12 +233,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 8
-  jumpForce: 12
+  jumpForce: 13
   groundCheck: {fileID: 2735295659300767379}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 72
-  groundCheckRadius: 0.1
+    m_Bits: 8
+  groundCheckRadius: 0.55
   jumpCutMultiplier: 0.5
   fallGravityMultiplier: 2.5
   maxFallSpeed: 18
@@ -253,6 +254,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 418b49df02af30f4885fa03fbbc95628, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInput
+--- !u!114 &5667886550435757081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2967273193813275567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b42f0104a2df29d46bc2b705197ab3f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
 --- !u!1 &4337501866898629419
 GameObject:
   m_ObjectHideFlags: 0

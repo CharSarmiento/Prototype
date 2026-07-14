@@ -1,16 +1,47 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private PlayerInput playerInput;
+    private Animator animator;
+
+    private static readonly int AttackHash = Animator.StringToHash("Attack");
+    [SerializeField] private float attackDuration = 0.5f;
+    public bool IsAttacking { get; private set; }
+
+    private void Awake()
     {
-        
+        playerInput = GetComponent<PlayerInput>();
+        animator = GetComponentInChildren<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if (playerInput.AttackPressed && !IsAttacking)
+        {
+            Attack();
+        }
+    }
+
+    private void Attack()
+    {
+        IsAttacking = true;
+        animator.SetTrigger(AttackHash);
+
+        StopAllCoroutines();
+        StartCoroutine(AttackRoutine());
+    }
+
+    public void EndAttack()
+    {
+        IsAttacking = false;
+    }
+
+    private IEnumerator AttackRoutine()
+    {
+        yield return new WaitForSeconds(attackDuration);
+
+        IsAttacking = false;
     }
 }
