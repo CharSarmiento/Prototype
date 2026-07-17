@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private PlayerInput playerInput;
-    private Animator animator;
+    [SerializeField] private Animator animator;
+    private PlayerAttack playerAttack;
 
 
      private static readonly int SpeedHash = Animator.StringToHash("Speed");
@@ -28,9 +29,10 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
 
-        animator = GetComponentInChildren<Animator>();
+        //animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
+        playerAttack = GetComponent<PlayerAttack>();
   
     }
 
@@ -58,7 +60,13 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.linearVelocity = new Vector2(playerInput.Move.x * moveSpeed, rb.linearVelocity.y);
+        float currentSpeed = playerAttack.IsAttacking
+            ? moveSpeed * 0.5f
+            : moveSpeed;
+
+        rb.linearVelocity = new Vector2(
+            playerInput.Move.x * currentSpeed,
+            rb.linearVelocity.y);
 
         ApplyBetterJump();
     }
